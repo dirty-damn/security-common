@@ -9,17 +9,11 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**
- * To solve that you have to go to this website, download the Unlimited Strength Jurisdiction Policy Files, unzip it, go to the <java-home>/lib/security directory,
- * and replace the two files local_policy.jar and US_export_policy.jar with the two files from the download.
+ * JDK 9 and later offer the stronger cryptographic algorithms by default.
  *
- * Starting with Java 1.8.0_151 and 1.8.0_152 there is a new somewhat easier way to enable the unlimited strength jurisdiction policy for the JVM. Without
- * enabling this you cannot use AES-256. Since this version, it is no longer necessary to download the policy files from the Oracle website and install it. You
- * can now set the unlimited policy directly in your application with this one-liner:
- * Security.setProperty("crypto.policy", "unlimited");
- *
- * In Java 1.8.0_162, the unlimited policy is enabled by default. You no longer need to install the policy file in the JRE or set the security property crypto.policy.
- *
- * openjdk bugs: Enable unlimited cryptographic policy by default in Oracle JDK builds
+ * The unlimited policy files are required only for JDK 8, 7, and 6 updates earlier than 8u161, 7u171, and 6u181.
+ * On those versions and later, the stronger cryptographic algorithms are available by default.
+ * 参考：https://www.oracle.com/java/technologies/javase-jce-all-downloads.html
  *
  * @author liuguanliang
  */
