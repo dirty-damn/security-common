@@ -1,5 +1,10 @@
 package top.senseiliu.security.key;
 
+/**
+ * 密钥相关的常量
+ *
+ * @author liuguanliang
+ */
 public final class KeyConstant {
     private KeyConstant() {}
 

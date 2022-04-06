@@ -1,5 +1,10 @@
-package top.senseiliu.security.key;
+package top.senseiliu.security.key.rsa;
 
+/**
+ * RSA密钥长度枚举
+ *
+ * @author liuguanliang
+ */
 public enum RSAKeyEnum {
     KEY_1024(1024),
     KEY_2048(2048),

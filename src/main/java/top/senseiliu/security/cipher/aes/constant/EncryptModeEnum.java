@@ -1,4 +1,4 @@
-package top.senseiliu.security.cipher;
+package top.senseiliu.security.cipher.aes.constant;
 
 /**
  * 加密模式枚举类

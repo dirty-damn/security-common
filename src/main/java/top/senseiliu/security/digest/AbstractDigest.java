@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.MessageFormat;
 
-import top.senseiliu.security.util.HexUtil;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  * 摘要算法抽象类
@@ -65,7 +65,9 @@ public abstract class AbstractDigest {
      */
     public String digest(byte[] bytes, boolean toLowerCase) {
         byte[] digestBytes = digestByte(bytes);
-        return HexUtil.encodeHexStr(digestBytes, toLowerCase);
+        String s = Hex.toHexString(digestBytes);
+
+        return toLowerCase ? s : s.toUpperCase();
     }
 
     /**
@@ -77,7 +79,9 @@ public abstract class AbstractDigest {
      */
     public String digest(String message, boolean toLowerCase) {
         byte[] bytes = digestByte(message);
-        return HexUtil.encodeHexStr(bytes, toLowerCase);
+        String s = Hex.toHexString(bytes);
+
+        return toLowerCase ? s : s.toUpperCase();
     }
 
     /**

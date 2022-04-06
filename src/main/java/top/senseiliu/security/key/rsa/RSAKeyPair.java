@@ -1,26 +1,36 @@
-package top.senseiliu.security.key;
+package top.senseiliu.security.key.rsa;
 
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.MessageFormat;
 
+import top.senseiliu.security.key.KeyConstant;
+
 /**
- * RSA公私钥工具类
+ * RSA密钥对
+ * 包含一个生成密钥对的静态方法
  *
  * @author liuguanliang
  */
-public final class RSAKey {
+public class RSAKeyPair {
+    private RSAPubRSAKey rsaPubKey;
+    private RSAPvtRSAKey rsaPvtKey;
 
+    public RSAKeyPair() {}
 
-    private RSAKey() {}
+    public RSAKeyPair(RSAPubRSAKey rsaPubKey, RSAPvtRSAKey rsaPvtKey) {
+        this.rsaPubKey = rsaPubKey;
+        this.rsaPvtKey = rsaPvtKey;
+    }
 
     /**
      * 生成指定长度的RSA公私钥
      *
      * @param rsaKeyEnum RSA密钥长度枚举
+     * @return RSA密钥对对象
      */
-    public static KeyPair keyPairGenerator(RSAKeyEnum rsaKeyEnum) {
+    public static RSAKeyPair generator(RSAKeyEnum rsaKeyEnum) {
         KeyPairGenerator keyPairGenerator = null;
         try {
             keyPairGenerator = KeyPairGenerator.getInstance(KeyConstant.RSA);
@@ -34,7 +44,22 @@ public final class RSAKey {
         RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        return new KeyPair(new KeyPair.RSAPubKey(rsaPublicKey.getEncoded()), new KeyPair.RSAPvtKey(rsaPrivateKey.getEncoded()));
+        return new RSAKeyPair(new RSAPubRSAKey(rsaPublicKey.getEncoded()), new RSAPvtRSAKey(rsaPrivateKey.getEncoded()));
     }
 
+    public RSAPubRSAKey getRsaPubKey() {
+        return rsaPubKey;
+    }
+
+    public void setRsaPubKey(RSAPubRSAKey rsaPubKey) {
+        this.rsaPubKey = rsaPubKey;
+    }
+
+    public RSAPvtRSAKey getRsaPvtKey() {
+        return rsaPvtKey;
+    }
+
+    public void setRsaPvtKey(RSAPvtRSAKey rsaPvtKey) {
+        this.rsaPvtKey = rsaPvtKey;
+    }
 }

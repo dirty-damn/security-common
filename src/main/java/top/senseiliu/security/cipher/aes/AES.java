@@ -1,4 +1,4 @@
-package top.senseiliu.security.cipher;
+package top.senseiliu.security.cipher.aes;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -8,7 +8,15 @@ import java.security.InvalidKeyException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import top.senseiliu.security.cipher.Constant;
+import top.senseiliu.security.cipher.aes.constant.AESKeyEnum;
+import top.senseiliu.security.cipher.aes.constant.EncryptModeEnum;
+
 /**
+ * AES加解密算法，提供了加密和加密的静态方法
+ * 密钥截取的方法，大于选定长度截断，小于则用'\0'填充，即用0X00填充字节
+ *
+ * 关于密钥长度的限制，如下：
  * JDK 9 and later offer the stronger cryptographic algorithms by default.
  *
  * The unlimited policy files are required only for JDK 8, 7, and 6 updates earlier than 8u161, 7u171, and 6u181.
@@ -17,9 +25,16 @@ import java.util.Arrays;
  *
  * @author liuguanliang
  */
-public class AES {
+public final class AES {
 
-
+    /**
+     * AES加密方法
+     *
+     * @param aesParam AES算法参数
+     * @param plain 明文字节数组
+     * @param key 密钥字节数组
+     * @return 密文字节数组
+     */
     public static byte[] AESEncode(AESParam aesParam, byte[] plain, byte[] key)  {
         SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
 
@@ -48,7 +63,6 @@ public class AES {
             } catch (Exception e) {
                 throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
             }
-
         }
 
         byte [] byte_AES = null;
@@ -61,6 +75,14 @@ public class AES {
         return byte_AES;
     }
 
+    /**
+     * AES解密方法
+     *
+     * @param aesParam AES算法参数
+     * @param ciphertext 密文字节数组
+     * @param key 密钥字节数组
+     * @return 明文字节数组
+     */
     public static byte[] AESDecode(AESParam aesParam, byte[] ciphertext, byte[] key)  {
         SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
 
@@ -101,12 +123,14 @@ public class AES {
         return plain;
     }
 
-    public static SecretKey getKey(byte[] key, AESKeyEnum aesKeyEnum) {
-        // 生成原始密钥
-//        KeyGenerator keygen= KeyGenerator.getInstance(KeyGeneratorEnum.AES.getDesc());
-//        keygen.init(new SecureRandom(key.getBytes()));
-//        SecretKey original_key = keygen.generateKey();
-
+    /**
+     * 填充key，根据选定的密钥长度，大于选定长度截断，小于则用'\0'填充，即用0X00填充字节
+     *
+     * @param key 密钥
+     * @param aesKeyEnum 密钥长度枚举
+     * @return AES密钥
+     */
+    private static SecretKey getKey(byte[] key, AESKeyEnum aesKeyEnum) {
         Integer keyByteLength = aesKeyEnum.getByteLength();
 
         // 填充key

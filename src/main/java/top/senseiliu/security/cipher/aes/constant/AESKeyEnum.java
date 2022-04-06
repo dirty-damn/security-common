@@ -1,5 +1,10 @@
-package top.senseiliu.security.cipher;
+package top.senseiliu.security.cipher.aes.constant;
 
+/**
+ * AES密钥长度枚举
+ *
+ * @author liuguanliang
+ */
 public enum AESKeyEnum {
     KEY_128(128, 16),
     KEY_192(192, 24),

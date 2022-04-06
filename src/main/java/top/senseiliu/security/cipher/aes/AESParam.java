@@ -1,9 +1,13 @@
-package top.senseiliu.security.cipher;
+package top.senseiliu.security.cipher.aes;
 
-import javax.crypto.spec.IvParameterSpec;
+import top.senseiliu.security.cipher.Constant;
+import top.senseiliu.security.cipher.aes.constant.AESKeyEnum;
+import top.senseiliu.security.cipher.aes.constant.EncryptModeEnum;
+import top.senseiliu.security.cipher.aes.constant.PaddingModeEnum;
 
 /**
  * 构造AES算法需要的参数
+ * 包括，AES密钥长度、加密模式、填充模式、初始偏移量iv
  *
  * @author liuguanliang
  */
