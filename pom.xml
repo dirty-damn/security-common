@@ -41,32 +41,11 @@
     </scm>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.bouncycastle</groupId>-->
-<!--            <artifactId>bcprov-ext-jdk15to18</artifactId>-->
-<!--            <version>1.70</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.64</version>
+            <artifactId>bcprov-ext-jdk15to18</artifactId>
+            <version>1.70</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.bouncycastle</groupId>-->
-<!--            <artifactId>bcprov-ext-jdk18on-171</artifactId>-->
-<!--            <version>1.71</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/src/main/resources/bcprov-ext-jdk18on-171.jar</systemPath>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <version>1.18.22</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>cglib</groupId>
