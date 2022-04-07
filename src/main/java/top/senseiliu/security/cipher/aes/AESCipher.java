@@ -5,13 +5,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
-import java.text.MessageFormat;
+import java.security.Key;
+import java.security.Security;
 import java.util.Arrays;
 
-import top.senseiliu.security.cipher.CipherCommon;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import top.senseiliu.security.cipher.AbstractCipher;
 import top.senseiliu.security.cipher.Constant;
 import top.senseiliu.security.cipher.aes.constant.AESKeyEnum;
 import top.senseiliu.security.cipher.aes.constant.EncryptModeEnum;
+import top.senseiliu.security.cipher.aes.constant.PaddingModeEnum;
 
 /**
  * AES加解密算法，提供了加密和加密的静态方法
@@ -26,66 +29,67 @@ import top.senseiliu.security.cipher.aes.constant.EncryptModeEnum;
  *
  * @author liuguanliang
  */
-public final class AES {
+public class AESCipher extends AbstractCipher {
+    static {
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+    }
+
+    private AESParam aesParam;
 
     /**
-     * AES加密方法
-     *
-     * @param aesParam AES算法参数
-     * @param plain 明文字节数组
-     * @param key 密钥字节数组
-     * @return 密文字节数组
+     * 只能通过{@link #init()}方法初始化
      */
-    public static byte[] AESEncode(AESParam aesParam, byte[] plain, byte[] key)  {
-        SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
+    private AESCipher() {}
 
-        Cipher cipher = CipherCommon.getCipher(aesParam.getAlgorithm());
-
-        if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
-            try {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            } catch (InvalidKeyException e) {
-                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
-            }
-        } else {
-            if ((null == aesParam.getIv() || aesParam.getIv().isEmpty())) {
-                throw new RuntimeException("[Cipher]除ECB模式外，其他模式都需要IV初始偏移量");
-            }
-
-            IvParameterSpec iv = new IvParameterSpec(aesParam.getIv().getBytes());
-            try {
-                cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
-            } catch (Exception e) {
-                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
-            }
-        }
-
-        byte [] byte_AES = null;
-        try {
-            byte_AES = cipher.doFinal(plain);
-        } catch (Exception e) {
-            throw new RuntimeException("[Cipher]加密明文时发送异常，msg：" + e.getMessage());
-        }
-
-        return byte_AES;
+    /**
+     * 有子类提供具体的算法名称，模板方法
+     *
+     * @return 算法名称
+     */
+    @Override
+    protected String algorithm() {
+        return Constant.AES + Constant.DELIMITER + this.aesParam.getEncryptModeEnum().getDesc() + Constant.DELIMITER + aesParam.getPaddingModeEnum().getDesc();
     }
 
     /**
-     * AES解密方法
+     * 实现加密算法和密钥的初始化
      *
-     * @param aesParam AES算法参数
-     * @param ciphertext 密文字节数组
-     * @param key 密钥字节数组
-     * @return 明文字节数组
+     * @param cipher 算法对象
+     * @param key 对称密钥/公钥
      */
-    public static byte[] AESDecode(AESParam aesParam, byte[] ciphertext, byte[] key)  {
-        SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
-
-        Cipher cipher = CipherCommon.getCipher(aesParam.getAlgorithm());
-
+    @Override
+    protected void initCipherEncrypt(Cipher cipher, Key key) {
         if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
             try {
-                cipher.init(Cipher.DECRYPT_MODE, secretKey);
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+            } catch (InvalidKeyException e) {
+                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
+            }
+        } else {
+            if ((null == aesParam.getIv() || aesParam.getIv().isEmpty())) {
+                throw new RuntimeException("[Cipher]除ECB模式外，其他模式都需要IV初始偏移量");
+            }
+
+            IvParameterSpec iv = new IvParameterSpec(aesParam.getIv().getBytes());
+            try {
+                cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+            } catch (Exception e) {
+                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 实现解密算法和密钥的初始化
+     *
+     * @param cipher 算法对象
+     * @param key 对称密钥/私钥
+     */
+    @Override
+    protected void initCipherDecrypt(Cipher cipher, Key key) {
+        if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
+            try {
+                cipher.init(Cipher.DECRYPT_MODE, key);
             } catch (InvalidKeyException e) {
                 throw new RuntimeException("[Cipher]解密密钥异常，msg：" + e.getMessage());
             }
@@ -96,31 +100,21 @@ public final class AES {
 
             IvParameterSpec iv = new IvParameterSpec(aesParam.getIv().getBytes());
             try {
-                cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
+                cipher.init(Cipher.DECRYPT_MODE, key, iv);
             } catch (Exception e) {
                 throw new RuntimeException("[Cipher]解密密钥异常，msg：" + e.getMessage());
             }
         }
-
-        byte [] plain = null;
-        try {
-            plain = cipher.doFinal(ciphertext);
-        } catch (Exception e) {
-            throw new RuntimeException("[Cipher]解密明文时发送异常，msg：" + e.getMessage());
-        }
-
-        return plain;
     }
 
     /**
      * 填充key，根据选定的密钥长度，大于选定长度截断，小于则用'\0'填充，即用0X00填充字节
      *
      * @param key 密钥
-     * @param aesKeyEnum 密钥长度枚举
      * @return AES密钥
      */
-    private static SecretKey getKey(byte[] key, AESKeyEnum aesKeyEnum) {
-        Integer keyByteLength = aesKeyEnum.getByteLength();
+    public SecretKey getKey(byte[] key) {
+        Integer keyByteLength = this.aesParam.getAesKeyEnum().getByteLength();
 
         // 填充key
         byte[] bytes = new byte[keyByteLength];
@@ -135,5 +129,23 @@ public final class AES {
         SecretKey secretKey = new SecretKeySpec(bytes, Constant.AES);
 
         return secretKey;
+    }
+
+    private void setAesParam(AESParam aesParam) {
+        this.aesParam = aesParam;
+    }
+
+    public static AESCipher init() {
+        AESParam aesParam = new AESParam(AESKeyEnum.KEY_256, EncryptModeEnum.ECB, PaddingModeEnum.PKCS5, null);
+
+        AESCipher aesCipher = new AESCipher();
+        aesCipher.setAesParam(aesParam);
+        return aesCipher;
+    }
+
+    public static AESCipher init(AESParam aesParam) {
+        AESCipher aesCipher = new AESCipher();
+        aesCipher.setAesParam(aesParam);
+        return aesCipher;
     }
 }
