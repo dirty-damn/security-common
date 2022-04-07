@@ -8,6 +8,7 @@ import java.security.InvalidKeyException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+import top.senseiliu.security.cipher.CipherCommon;
 import top.senseiliu.security.cipher.Constant;
 import top.senseiliu.security.cipher.aes.constant.AESKeyEnum;
 import top.senseiliu.security.cipher.aes.constant.EncryptModeEnum;
@@ -38,13 +39,7 @@ public final class AES {
     public static byte[] AESEncode(AESParam aesParam, byte[] plain, byte[] key)  {
         SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
 
-        Cipher cipher = null;
-        try {
-            cipher = Cipher.getInstance(aesParam.getAlgorithm());
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    MessageFormat.format("[Cipher]getInstance()时找不到{0}算法提供者，msg：{1}", aesParam.getAlgorithm(), e.getMessage()));
-        }
+        Cipher cipher = CipherCommon.getCipher(aesParam.getAlgorithm());
 
         if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
             try {
@@ -54,7 +49,7 @@ public final class AES {
             }
         } else {
             if ((null == aesParam.getIv() || aesParam.getIv().isEmpty())) {
-                throw new RuntimeException("[Cipher]除ECB加密模式外，其他模式都需要IV初始偏移量");
+                throw new RuntimeException("[Cipher]除ECB模式外，其他模式都需要IV初始偏移量");
             }
 
             IvParameterSpec iv = new IvParameterSpec(aesParam.getIv().getBytes());
@@ -86,30 +81,24 @@ public final class AES {
     public static byte[] AESDecode(AESParam aesParam, byte[] ciphertext, byte[] key)  {
         SecretKey secretKey = getKey(key, aesParam.getAesKeyEnum());
 
-        Cipher cipher = null;
-        try {
-            cipher = Cipher.getInstance(aesParam.getAlgorithm());
-        } catch (Exception e) {
-            throw new RuntimeException(
-                    MessageFormat.format("[Cipher]getInstance()时找不到{0}算法提供者，msg：{1}", aesParam.getAlgorithm(), e.getMessage()));
-        }
+        Cipher cipher = CipherCommon.getCipher(aesParam.getAlgorithm());
 
         if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
             try {
                 cipher.init(Cipher.DECRYPT_MODE, secretKey);
             } catch (InvalidKeyException e) {
-                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
+                throw new RuntimeException("[Cipher]解密密钥异常，msg：" + e.getMessage());
             }
         } else {
             if ((null == aesParam.getIv() || aesParam.getIv().isEmpty())) {
-                throw new RuntimeException("[Cipher]除ECB加密模式外，其他模式都需要IV初始偏移量");
+                throw new RuntimeException("[Cipher]除ECB模式外，其他模式都需要IV初始偏移量");
             }
 
             IvParameterSpec iv = new IvParameterSpec(aesParam.getIv().getBytes());
             try {
                 cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
             } catch (Exception e) {
-                throw new RuntimeException("[Cipher]加密密钥异常，msg：" + e.getMessage());
+                throw new RuntimeException("[Cipher]解密密钥异常，msg：" + e.getMessage());
             }
         }
 

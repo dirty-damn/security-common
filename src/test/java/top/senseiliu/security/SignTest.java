@@ -8,7 +8,7 @@ import top.senseiliu.security.signature.Sign;
 import top.senseiliu.security.signature.SignatureEnum;
 
 public class SignTest {
-    private RSAPvtRSAKey pvt() {
+    public static RSAPvtRSAKey pvt() {
         String pemPKCS8 = "-----BEGIN PRIVATE KEY-----\r\n" +
                 "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAId7rfXopAhYF6Ee\r\n" +
                 "UkGIUP426+inmWFYLS7lsvgQezmC0CduaQcy4QrRTGi6m/hB0uY6/g0nv2qpq2SQ\r\n" +
@@ -30,7 +30,7 @@ public class SignTest {
         return rsaPvtKey;
     }
 
-    private RSAPubRSAKey pub() {
+    public static RSAPubRSAKey pub() {
         String pemPKCS8Pub = "-----BEGIN PUBLIC KEY-----\r\n" +
                 "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHe6316KQIWBehHlJBiFD+Nuvo\r\n" +
                 "p5lhWC0u5bL4EHs5gtAnbmkHMuEK0Uxoupv4QdLmOv4NJ79qqatkkC0qa6PBCrRv\r\n" +
