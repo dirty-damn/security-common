@@ -24,7 +24,6 @@ public class CipherTest {
         // 指定编解码器
         aesCipher1.codec(AbstractCipher.encPostHexHandler, AbstractCipher.decPreHexHandler);
         String encrypt1 = aesCipher1.encrypt("123", aesCipher1.getKey("123".getBytes()));
-        System.out.println(encrypt1);
         String decrypt1 = aesCipher1.decrypt(encrypt1, aesCipher1.getKey("123".getBytes()));
         Assert.assertEquals(decrypt1, "123");
     }
@@ -40,7 +39,6 @@ public class CipherTest {
         // 指定编解码器
         rsaCipher1.codec(AbstractCipher.encPostHexHandler, AbstractCipher.decPreHexHandler);
         String encrypt1 = rsaCipher1.encrypt("123", SignTest.pub().getPublicKey());
-        System.out.println(encrypt1);
         String decrypt1 = rsaCipher1.decrypt(encrypt1, SignTest.pvt().getPrivateKey());
         Assert.assertEquals(decrypt1, "123");
     }
