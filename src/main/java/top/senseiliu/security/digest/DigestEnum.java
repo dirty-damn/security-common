@@ -4,10 +4,10 @@ package top.senseiliu.security.digest;
  * 摘要枚举值
  * 枚举字符串是JCA提供者提供摘要算法实现
  *
- * 包括openssl 1.1.1m能提供的所有摘要算法，除了mdc2、rmd160
+ * 包括openssl 1.1.1m能提供的所有摘要算法，除了mdc2
  * Message Digest commands (see the `dgst' command for more details)
  * blake2b512        blake2s256        gost              md4
- * md5               --mdc2            --rmd160          sha1
+ * md5               --mdc2            rmd160            sha1
  * sha224            sha256            sha3-224          sha3-256
  * sha3-384          sha3-512          sha384            sha512
  * sha512-224        sha512-256        shake128          shake256
@@ -22,6 +22,9 @@ public enum DigestEnum {
     GOST("GOST3411"),
     MD4("MD4"),
     MD5("MD5"),
+    RMD128("RIPEMD128"),
+    RMD160("RIPEMD160"),
+    RMD256("RIPEMD256"),
     // SHA1
     SHA1("SHA-1"),
     // SHA2，SHA-224、SHA-256、SHA-384，和SHA-512并称为SHA2
