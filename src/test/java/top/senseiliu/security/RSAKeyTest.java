@@ -1,5 +1,8 @@
 package top.senseiliu.security;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 import org.junit.Assert;
 import org.junit.Test;
 import top.senseiliu.security.key.rsa.RSAKeyPair;
@@ -22,6 +25,11 @@ public class RSAKeyTest {
         Assert.assertNotNull(pkcs1);
         String pkcs1Pub = rsaKeyPair.getRsaPubKey().getPemPKCS1();
         Assert.assertNotNull(pkcs1Pub);
+
+        PrivateKey privateKey = rsaKeyPair.getRsaPvtKey().getPrivateKey();
+        Assert.assertNotNull(privateKey);
+        PublicKey publicKey = rsaKeyPair.getRsaPubKey().getPublicKey();
+        Assert.assertNotNull(publicKey);
     }
 
     @Test

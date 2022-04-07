@@ -43,7 +43,7 @@ public final class AES {
             cipher = Cipher.getInstance(aesParam.getAlgorithm());
         } catch (Exception e) {
             throw new RuntimeException(
-                    MessageFormat.format("[Cipher]getInstance()时找不到{}算法提供者，msg：{}", aesParam.getAlgorithm(), e.getMessage()));
+                    MessageFormat.format("[Cipher]getInstance()时找不到{0}算法提供者，msg：{1}", aesParam.getAlgorithm(), e.getMessage()));
         }
 
         if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {
@@ -91,7 +91,7 @@ public final class AES {
             cipher = Cipher.getInstance(aesParam.getAlgorithm());
         } catch (Exception e) {
             throw new RuntimeException(
-                    MessageFormat.format("[Cipher]getInstance()时找不到{}算法提供者，msg：{}", aesParam.getAlgorithm(), e.getMessage()));
+                    MessageFormat.format("[Cipher]getInstance()时找不到{0}算法提供者，msg：{1}", aesParam.getAlgorithm(), e.getMessage()));
         }
 
         if (EncryptModeEnum.ECB.equals(aesParam.getEncryptModeEnum())) {

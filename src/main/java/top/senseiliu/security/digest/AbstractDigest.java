@@ -29,7 +29,7 @@ public abstract class AbstractDigest {
             instance =  MessageDigest.getInstance(getName());
         } catch (Exception e) {
             throw new RuntimeException(
-                    MessageFormat.format("[MessageDigest]getInstance()时找不到{}算法提供者，msg：{}", getName(), e.getMessage()));
+                    MessageFormat.format("[MessageDigest]getInstance()时找不到{0}算法提供者，msg：{1}", getName(), e.getMessage()));
         }
 
         return instance;

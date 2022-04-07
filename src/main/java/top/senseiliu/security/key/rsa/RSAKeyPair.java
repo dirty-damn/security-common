@@ -36,7 +36,7 @@ public class RSAKeyPair {
             keyPairGenerator = KeyPairGenerator.getInstance(KeyConstant.RSA);
         } catch (Exception e) {
             throw new RuntimeException(
-                    MessageFormat.format("[KeyPairGenerator]getInstance()时找不到{}的KeyPairGenerator提供者，msg：{}", KeyConstant.RSA, e.getMessage()));
+                    MessageFormat.format("[KeyPairGenerator]getInstance()时找不到{0}的KeyPairGenerator提供者，msg：{1}", KeyConstant.RSA, e.getMessage()));
         }
         keyPairGenerator.initialize(rsaKeyEnum.getKeyLength());
         java.security.KeyPair keyPair = keyPairGenerator.generateKeyPair();

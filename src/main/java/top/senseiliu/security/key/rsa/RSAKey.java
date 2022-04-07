@@ -80,7 +80,7 @@ public abstract class RSAKey {
         try (PemWriter pemWriter = new PemWriter(stringWriter)) {
             pemWriter.writeObject(pemObject);
         } catch (Exception e) {
-            throw new RuntimeException("[PemWriter]写PEM时发生异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[PemWriter]写PEM时发生异常，msg：{0}" + e.getMessage());
         }
 
         return stringWriter.toString();
@@ -103,7 +103,7 @@ public abstract class RSAKey {
         try {
             pemObject = pemReader.readPemObject();
         } catch (Exception e) {
-            throw new RuntimeException("[PemObject]读取pem时发生了异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[PemObject]读取pem时发生了异常，msg：{0}" + e.getMessage());
         }
         return pemObject;
     }

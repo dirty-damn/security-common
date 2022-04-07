@@ -1,8 +1,11 @@
 package top.senseiliu.security.key.rsa;
 
 import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.MessageFormat;
 
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -20,6 +23,30 @@ public class RSAPubRSAKey extends RSAKey {
 
     public RSAPubRSAKey(byte[] rsaPubKey) {
         super(rsaPubKey);
+    }
+
+    /**
+     * 获取PublicKey
+     *
+     * @return PublicKey
+     */
+    public PublicKey getPublicKey() {
+        KeyFactory keyFactory = null;
+        try {
+            keyFactory = KeyFactory.getInstance(KeyConstant.RSA);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    MessageFormat.format("[KeyFactory]getInstance()时找不到{0}的KeyFactory提供者，msg：{1}", KeyConstant.RSA, e.getMessage()));
+        }
+
+        PublicKey publicKey = null;
+        try {
+            publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(this.keyBytes));
+        } catch (Exception e) {
+            throw new RuntimeException("[keyFactory]bytes转PrivateKey时发生异常，msg：{0}" + e.getMessage());
+        }
+
+        return publicKey;
     }
 
     /**
@@ -66,14 +93,14 @@ public class RSAPubRSAKey extends RSAKey {
             keyFactory = KeyFactory.getInstance(KeyConstant.RSA);
         } catch (Exception e) {
             throw new RuntimeException(
-                    MessageFormat.format("[KeyFactory]getInstance()时找不到{}的KeyFactory提供者，msg：{}", KeyConstant.RSA, e.getMessage()));
+                    MessageFormat.format("[KeyFactory]getInstance()时找不到{0}的KeyFactory提供者，msg：{1}", KeyConstant.RSA, e.getMessage()));
         }
 
         PublicKey publicKey = null;
         try {
             publicKey =  keyFactory.generatePublic(new RSAPublicKeySpec(rsaPub.getModulus(), rsaPub.getPublicExponent()));
         } catch (Exception e) {
-            throw new RuntimeException("[ASN1InputStream]公钥转PKCS8时发生异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[ASN1InputStream]公钥转PKCS8时发生异常，msg：{0}" + e.getMessage());
         }
 
         return publicKey.getEncoded();
@@ -93,7 +120,7 @@ public class RSAPubRSAKey extends RSAKey {
             ASN1Primitive primitive = spkInfo.parsePublicKey();
             encoded = primitive.getEncoded();
         } catch (Exception e) {
-            throw new RuntimeException("[SubjectPublicKeyInfo]公钥转PKCS1时发生异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[SubjectPublicKeyInfo]公钥转PKCS1时发生异常，msg：{0}" + e.getMessage());
         }
 
         return encoded;

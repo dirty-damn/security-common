@@ -1,5 +1,13 @@
 package top.senseiliu.security.key.rsa;
 
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.text.MessageFormat;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -19,6 +27,30 @@ public class RSAPvtRSAKey extends RSAKey {
 
     public RSAPvtRSAKey(byte[] rsaPvtKey) {
         super(rsaPvtKey);
+    }
+
+    /**
+     * 获取PrivateKey
+     *
+     * @return PrivateKey
+     */
+    public PrivateKey getPrivateKey() {
+        KeyFactory keyFactory = null;
+        try {
+            keyFactory = KeyFactory.getInstance(KeyConstant.RSA);
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    MessageFormat.format("[KeyFactory]getInstance()时找不到{0}的KeyFactory提供者，msg：{1}", KeyConstant.RSA, e.getMessage()));
+        }
+
+        PrivateKey privateKey = null;
+        try {
+            privateKey = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(this.keyBytes));
+        } catch (Exception e) {
+            throw new RuntimeException("[keyFactory]bytes转PrivateKey时发生异常，msg：{0}" + e.getMessage());
+        }
+
+        return privateKey;
     }
 
     /**
@@ -66,7 +98,7 @@ public class RSAPvtRSAKey extends RSAKey {
             PrivateKeyInfo privKeyInfo = new PrivateKeyInfo(algorithmIdentifier, asn1Object);
             pkcs8Bytes = privKeyInfo.getEncoded();
         } catch (Exception e) {
-            throw new RuntimeException("[KeyFactory]转PKCS8私钥时发生异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[KeyFactory]转PKCS8私钥时发生异常，msg：{0}" + e.getMessage());
         }
 
         return pkcs8Bytes;
@@ -87,7 +119,7 @@ public class RSAPvtRSAKey extends RSAKey {
             ASN1Primitive primitive = encodable.toASN1Primitive();
             privateKeyPKCS1 = primitive.getEncoded();
         } catch (Exception e) {
-            throw new RuntimeException("[PrivateKeyInfo]私钥转PKCS1时发生异常，msg：{}" + e.getMessage());
+            throw new RuntimeException("[PrivateKeyInfo]私钥转PKCS1时发生异常，msg：{0}" + e.getMessage());
         }
 
         return privateKeyPKCS1;
