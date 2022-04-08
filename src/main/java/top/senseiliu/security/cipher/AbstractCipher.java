@@ -17,12 +17,6 @@ import org.bouncycastle.util.encoders.Hex;
 public abstract class AbstractCipher {
 
     /**
-     * 对字节数组所使用编解码器，默认使用Base64
-     */
-    private Function<byte[], String> encPostProcessHandler = encPostBase64Handler;
-    private Function<String, byte[]> decPreProcessHandler = decPreBase64Handler;
-
-    /**
      * AbstractCipher提供的编解码器，包括Base64和Hex
      */
     public static Function<byte[], String> encPostBase64Handler = o -> Base64.getEncoder().encodeToString(o);
@@ -54,19 +48,7 @@ public abstract class AbstractCipher {
     protected abstract void initCipherDecrypt(Cipher cipher, Key key);
 
     /**
-     * 设置编码解码器，默认使用Base64，
-     * 策略模式，由调用方指定编码方式
-     */
-    public void codec(Function<byte[], String> encPostProcessHandler, Function<String, byte[]> decPreProcessHandler) {
-        if (null == encPostProcessHandler || null == decPreProcessHandler) {
-            throw new RuntimeException("[Cipher]算法编码器不能设置为null");
-        }
-        this.encPostProcessHandler = encPostProcessHandler;
-        this.decPreProcessHandler = decPreProcessHandler;
-    }
-
-    /**
-     * 加密方法
+     * 加密方法，默认使用Base64
      *
      * @param plain 明文字符串
      * @param key 密钥
@@ -74,17 +56,43 @@ public abstract class AbstractCipher {
      */
     public String encrypt(String plain, Key key) {
         byte[] encrypt = encrypt(plain.getBytes(StandardCharsets.UTF_8), key);
-        return encPostProcessHandler.apply(encrypt);
+        return encPostBase64Handler.apply(encrypt);
     }
 
     /**
-     * 解密方法
+     * 解密方法，默认使用Base64
      *
      * @param cipherText 编码器处理的密文
      * @param key 密钥
      * @return 明文字符串
      */
     public String decrypt(String cipherText, Key key) {
+        byte[] decrypt = decrypt(decPreBase64Handler.apply(cipherText), key);
+        return new String(decrypt, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 加密方法
+     * 设置编码解码器，策略模式，由调用方指定编码方式
+     *
+     * @param plain 明文字符串
+     * @param key 密钥
+     * @return 编码器编码的密文
+     */
+    public String encrypt(String plain, Key key, Function<byte[], String> encPostProcessHandler) {
+        byte[] encrypt = encrypt(plain.getBytes(StandardCharsets.UTF_8), key);
+        return encPostProcessHandler.apply(encrypt);
+    }
+
+    /**
+     * 解密方法
+     * 设置编码解码器，策略模式，由调用方指定编码方式
+     *
+     * @param cipherText 编码器处理的密文
+     * @param key 密钥
+     * @return 明文字符串
+     */
+    public String decrypt(String cipherText, Key key, Function<String, byte[]> decPreProcessHandler) {
         byte[] decrypt = decrypt(decPreProcessHandler.apply(cipherText), key);
         return new String(decrypt, StandardCharsets.UTF_8);
     }

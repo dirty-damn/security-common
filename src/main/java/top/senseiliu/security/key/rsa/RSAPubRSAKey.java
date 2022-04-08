@@ -1,8 +1,12 @@
 package top.senseiliu.security.key.rsa;
 
+import java.io.ByteArrayInputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -124,6 +128,33 @@ public class RSAPubRSAKey extends RSAKey {
         }
 
         return encoded;
+    }
+
+    /**
+     * 通过证书提取公钥
+     *
+     * @param certificateBytes 证书字节流
+     * @return PKCS8的公钥字节流
+     */
+    public static byte[] certificateToPublicKey(byte[] certificateBytes) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(certificateBytes);
+        CertificateFactory cf = null;
+        try {
+            cf = CertificateFactory.getInstance(KeyConstant.X509);
+        } catch (Exception e) {
+            throw new RuntimeException("[CertificateFactory]getInstance()X509时发生异常，msg：{0}" + e.getMessage());
+        }
+
+        Certificate certificate = null;
+        try {
+            certificate = cf.generateCertificate(bis);
+        } catch (CertificateException e) {
+            throw new RuntimeException("[CertificateFactory]X509提取公钥时发生异常，msg：{0}" + e.getMessage());
+        }
+
+        PublicKey publicKey = certificate.getPublicKey();
+
+        return publicKey.getEncoded();
     }
 
     /**

@@ -17,4 +17,7 @@ public final class KeyConstant {
     public static final String PUB_PKCS1 = "RSA PUBLIC KEY";
 
     public static final String RSA = "RSA";
+
+    // 证书
+    public static final String X509 = "X.509";
 }

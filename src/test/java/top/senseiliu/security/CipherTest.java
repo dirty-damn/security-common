@@ -22,9 +22,8 @@ public class CipherTest {
         AESParam aesParam = new AESParam(AESKeyEnum.KEY_128, EncryptModeEnum.ECB, PaddingModeEnum.PKCS5, "1234567890123456");
         AESCipher aesCipher1 = AESCipher.init(aesParam);
         // 指定编解码器
-        aesCipher1.codec(AbstractCipher.encPostHexHandler, AbstractCipher.decPreHexHandler);
-        String encrypt1 = aesCipher1.encrypt("123", aesCipher1.getKey("123".getBytes()));
-        String decrypt1 = aesCipher1.decrypt(encrypt1, aesCipher1.getKey("123".getBytes()));
+        String encrypt1 = aesCipher1.encrypt("123", aesCipher1.getKey("123".getBytes()), AbstractCipher.encPostHexHandler);
+        String decrypt1 = aesCipher1.decrypt(encrypt1, aesCipher1.getKey("123".getBytes()), AbstractCipher.decPreHexHandler);
         Assert.assertEquals(decrypt1, "123");
     }
 
@@ -37,9 +36,8 @@ public class CipherTest {
 
         RSACipher rsaCipher1 = RSACipher.init(RSAPaddingModeEnum.OAEP);
         // 指定编解码器
-        rsaCipher1.codec(AbstractCipher.encPostHexHandler, AbstractCipher.decPreHexHandler);
-        String encrypt1 = rsaCipher1.encrypt("123", SignTest.pub().getPublicKey());
-        String decrypt1 = rsaCipher1.decrypt(encrypt1, SignTest.pvt().getPrivateKey());
+        String encrypt1 = rsaCipher1.encrypt("123", SignTest.pub().getPublicKey(), AbstractCipher.encPostHexHandler);
+        String decrypt1 = rsaCipher1.decrypt(encrypt1, SignTest.pvt().getPrivateKey(), AbstractCipher.decPreHexHandler);
         Assert.assertEquals(decrypt1, "123");
     }
 }
