@@ -20,6 +20,15 @@
 
 ## 2 依赖
 
+已发布到Maven中央仓库，坐标地址：
+
+```xml
+<dependency>
+    <groupId>io.feistel</groupId>
+    <artifactId>security-common</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
 
 
 ## 3 使用实例
@@ -228,3 +237,5 @@ String encrypt1 = rsaCipher1.encrypt("123", rsaPubKey.getPublicKey(), AbstractCi
 String decrypt1 = rsaCipher1.decrypt(encrypt1, rsaPvtKey.getPrivateKey(), AbstractCipher.decPreHexHandler);
 Assert.assertEquals(decrypt1, "123");
 ```
+
+*目前项目仅涵盖非常非常基础的功能，如果你想贡献代码，非常期待你的加入，贡献开源力量，共勉。*

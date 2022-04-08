@@ -5,7 +5,7 @@
 
     <groupId>io.feistel</groupId>
     <artifactId>security-common</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>security-common</name>
     <description>Java security utils</description>
     <url>https://github.com/dirty-damn/security-common</url>
