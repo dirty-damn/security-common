@@ -77,6 +77,7 @@ public abstract class AbstractCipher {
      *
      * @param plain 明文字符串
      * @param key 密钥
+     * @param encPostProcessHandler 编码器
      * @return 编码器编码的密文
      */
     public String encrypt(String plain, Key key, Function<byte[], String> encPostProcessHandler) {
@@ -90,6 +91,7 @@ public abstract class AbstractCipher {
      *
      * @param cipherText 编码器处理的密文
      * @param key 密钥
+     * @param decPreProcessHandler 解码器
      * @return 明文字符串
      */
     public String decrypt(String cipherText, Key key, Function<String, byte[]> decPreProcessHandler) {

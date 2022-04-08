@@ -17,11 +17,15 @@ public abstract class AbstractDigest {
 
     /**
      * 用于给代理类提供重写的方法，是getInstance()的模板方法
+     *
+     * @return 摘要算法名
      */
     protected abstract String getName();
 
     /**
      * 调用getInstance获取MessageDigest
+     *
+     * @return MessageDigest对象
      */
     public MessageDigest getInstance() {
         MessageDigest instance = null;
